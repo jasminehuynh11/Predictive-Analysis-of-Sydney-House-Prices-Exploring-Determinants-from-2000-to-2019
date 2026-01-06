@@ -1,42 +1,107 @@
-# 🏠 Predictive Analysis of Sydney House Prices 🏙️
+# Predictive Analysis of Sydney House Prices
 
-## 🌆 Project Overview
-This project is centered around predicting Sydney house prices using a variety of machine-learning models. The dataset, which spans from 2000 to 2019, encompasses roughly 200,000 property sales in Sydney as obtained from realestate.com.au. Through detailed exploration and preprocessing of this dataset, our aim has been to achieve the highest accuracy in our predictions across multiple machine learning models.
+## Overview
 
-## 📊 Dataset Description
-The dataset, an analytical cornerstone of this project, presents property sale records from Sydney over a duration of 19 years (2000-2019). It provides insights into nearly 200,000 property sales transactions. Each record delineates attributes that are potential influencers of a property's price, including:
+This project analyzes and predicts residential property sale prices in Sydney from 2000 to 2019 using machine learning models. The analysis includes data exploration, preprocessing, feature engineering, and evaluation of multiple regression models.
 
-- 📅 Sale date
-- 📍 Location (both suburb and postal code)
-- 🏡 Property type
-- 🛏️ Key features of the property (e.g., number of bedrooms, bathrooms, car spaces)
+## Dataset
 
-**Source:** [🔗 Kaggle - Sydney House Prices](https://www.kaggle.com/datasets/mihirhalai/sydney-house-prices/data)
+The dataset contains approximately 200,000 property sale records from Sydney spanning 2000 to 2019, obtained from realestate.com.au.
 
-## 🎯 Objective
-The primary goal was to predict housing prices in Sydney over the span of two decades. This involved deciphering significant determinants of house prices and gauging the performance of various predictive models in capturing these determinants and trends.
+**Dataset Source:** [Sydney House Prices - Kaggle](https://www.kaggle.com/datasets/mihirhalai/sydney-house-prices/data)
 
-## ✅ Key Tasks Undertaken
-- 🧹 **Data Cleaning:** Addressed missing values, outliers, and any inconsistencies present in the dataset to ensure accurate analysis.
-- 🔍 **Exploratory Data Analysis (EDA):** Visualized and analyzed distributions, correlations, and patterns within the data.
-- 🔧 **Feature Engineering:** Enhanced the dataset by deriving new features and optimizing existing ones to boost model performance.
-- 🤖 **Model Selection and Training:** Various predictive models, including Linear Regression, KNN, and Random Forest, were selected, trained, and evaluated based on their predictive accuracy.
-- 🎛️ **Model Tuning:** Used techniques like grid search and cross-validation to fine-tune model parameters, enhancing prediction capabilities.
-- ⚖️ **Evaluation:** Employed metrics like MAE, R2 score, and scatter plots to evaluate and compare the performance of each model.
+### Variables
 
-## 🧠 Key Insights
-- 🌍 Location remained a paramount determinant in Sydney's housing market, reaffirming the real estate principle of "location, location, location".
-- 📉 Decade-spanning fluctuations possibly reflect external events (be it economic, political, or environmental), highlighting the housing market's inherent dynamism.
-- 🌲 Among evaluated models, ensemble methods, notably the Tuned Random Forest, emerged as the most adept in making accurate predictions.
+- **Target Variable:** `sellPrice` - Property selling price
+- **Predictor Variables:**
+  - `Date` - Sale date
+  - `suburb` - Property suburb
+  - `postalCode` - Postal code
+  - `bed` - Number of bedrooms
+  - `bath` - Number of bathrooms
+  - `car` - Number of car spaces
+  - `propType` - Property type (house, duplex, townhouse, etc.)
 
-## 📉 Visualization and Comparative Analysis
-Scatter plots offered an intuitive glimpse into the predictive prowess of different models. The predictions from the Tuned Random Forest, in particular, aligned closely with actual prices, signifying its superior capability in the context of Sydney's housing scene.
+## Methodology
 
-## 🌟 Future Recommendations
-- 📆 **Time-Series Analysis:** Delve into the temporal aspects of housing prices to identify underlying seasonality, trends, and cyclical patterns.
-- 📈 **Integrate External Factors:** Incorporate datasets like economic indicators or population metrics to enrich predictive accuracy.
-- 🗺️ **Geospatial Analysis:** Harnessing Sydney's geographical data might yield deeper insights into price variations across regions.
+### Data Preprocessing
 
-## 🖊️ Conclusion
-The complexity of Sydney's housing market, with its diverse influences and factors, posed a challenge ripe for prediction. Our progression from foundational models like Linear Regression to sophisticated ones like the Tuned Random Forest showcased the transformative potential of predictive analytics in real estate.
+1. **Missing Value Imputation:** Median imputation for missing values in `bed` and `car` columns
+2. **Outlier Treatment:** Capped extreme values in `bed`, `bath`, and `car` columns at 10
+3. **Data Transformation:**
+   - Box-Cox transformation applied to `sellPrice` to normalize distribution
+   - Ordinal encoding for categorical variables (`suburb`, `propType`)
+   - Datetime conversion and year extraction from `Date` column
+4. **Feature Engineering:**
+   - Removed irrelevant columns (`Id`)
+   - Train-test split (80-20)
+   - Standard scaling applied for distance-based models
 
+### Models Evaluated
+
+1. **Linear Regression** - Baseline model
+2. **K-Nearest Neighbors (KNN)** - With 10-fold cross-validation
+3. **Decision Tree** - With GridSearchCV hyperparameter tuning
+4. **Random Forest** - With RandomizedSearchCV hyperparameter tuning
+
+### Evaluation Metric
+
+Root Mean Squared Error (RMSE) was used as the primary evaluation metric:
+
+$$RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (predicted_i - actual_i)^2}$$
+
+## Results
+
+### Model Performance
+
+| Model | RMSE | R² Score |
+|-------|------|----------|
+| Linear Regression | 1.089 | 0.4745 |
+| KNN | 0.891 | 0.6485 |
+| KNN (10-Fold CV) | 0.884 | - |
+| Decision Tree | 0.883 | 0.6543 |
+| Decision Tree (Tuned) | 0.760 | 0.7442 |
+| Random Forest | 0.756 | 0.7468 |
+| Random Forest (Tuned) | **0.711** | **0.7757** |
+
+### Key Findings
+
+- **Best Model:** Tuned Random Forest achieved the lowest RMSE (0.711) and highest R² score (0.7757), explaining 77.57% of price variance
+- **Feature Importance:** Location (suburb and postal code) is the most significant predictor of property prices
+- **Model Comparison:** Ensemble methods (Random Forest) outperformed linear and instance-based models
+- **Hyperparameter Tuning:** Significantly improved model performance for both Decision Tree and Random Forest models
+
+## Project Structure
+
+```
+.
+├── sydney_house_prices_analysis.ipynb  # Main analysis notebook
+└── README.md                            # Project documentation
+```
+
+## Usage
+
+1. Download the dataset from [Kaggle](https://www.kaggle.com/datasets/mihirhalai/sydney-house-prices/data)
+2. Place `SydneyHousePrices.csv` in the project directory
+3. Open and run `sydney_house_prices_analysis.ipynb`
+
+## Requirements
+
+- Python 3.x
+- pandas
+- numpy
+- scikit-learn
+- matplotlib
+- seaborn
+- scipy
+
+## Future Work
+
+- **Time-Series Analysis:** Implement time series models to identify seasonality, trends, and cyclical patterns
+- **External Factors:** Integrate economic indicators and population growth metrics
+- **Geospatial Analysis:** Use geographical coordinates for spatial price variation analysis
+- **Advanced Models:** Explore Gradient Boosting and other ensemble techniques
+
+## Summary
+
+This project demonstrates the application of multiple machine learning models to predict Sydney house prices. The tuned Random Forest model achieved the best performance, with location, property type, and property attributes identified as key price determinants. The analysis provides insights into Sydney's housing market dynamics from 2000-2019.
